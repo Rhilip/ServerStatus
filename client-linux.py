@@ -1,14 +1,7 @@
 # -*- coding: utf-8 -*-
 # Update by : https://github.com/Rhilip/ServerStatus
-# 支持Python版本：2.7 to 3.5
-# 支持操作系统： Linux, OSX, FreeBSD, OpenBSD and NetBSD, both 32-bit and 64-bit architectures
-
-
-SERVER = "127.0.0.1"
-PORT = 35601
-USER = "USER"
-PASSWORD = "USER_PASSWORD"
-INTERVAL = 1  # 更新间隔
+# Support Python version：2.7 to 3.5
+# Support OS version： Linux, OSX, FreeBSD, OpenBSD and NetBSD, both 32-bit and 64-bit architectures
 
 import socket
 import time
@@ -18,14 +11,21 @@ import json
 import subprocess
 import collections
 
+# -*- CLIENT SETTING -*-
+SERVER = "127.0.0.1"
+PORT = 35601
+USER = "USER"
+PASSWORD = "USER_PASSWORD"
+INTERVAL = 1  # Update interval
+IN_CHINA = False  # enabled in china (changed to True)
+# -*- END OF CLIENT SETTING -*-
+
 
 def get_uptime():
-    f = open('/proc/uptime', 'r')
-    uptime = f.readline()
-    f.close()
-    uptime = uptime.split('.', 2)
-    time = int(uptime[0])
-    return int(time)
+    with open('/proc/uptime', 'r') as f:
+        uptime = f.readline()
+        uptime = uptime.split('.', 2)
+    return int(uptime[0])
 
 
 def get_memory():
@@ -39,9 +39,7 @@ def get_memory():
         result[key] = int(value)
 
     MemTotal = float(result['MemTotal'])
-    MemFree = float(result['MemFree'])
-    Cached = float(result['Cached'])
-    MemUsed = MemTotal - (Cached + MemFree)
+    MemUsed = MemTotal - (float(result['Cached']) + float(result['MemFree']))
     SwapTotal = float(result['SwapTotal'])
     SwapFree = float(result['SwapFree'])
     return int(MemTotal), int(MemUsed), int(SwapTotal), int(SwapFree)
@@ -50,7 +48,8 @@ def get_memory():
 def get_hdd():
     p = subprocess.check_output(
         ['df', '-Tlm', '--total', '-t', 'ext4', '-t', 'ext3', '-t', 'ext2', '-t', 'reiserfs', '-t', 'jfs', '-t', 'ntfs',
-         '-t', 'fat32', '-t', 'btrfs', '-t', 'fuseblk', '-t', 'zfs', '-t', 'simfs', '-t', 'xfs']).decode("utf-8")
+         '-t', 'fat32', '-t', 'btrfs', '-t', 'fuseblk', '-t', 'zfs', '-t', 'simfs', '-t', 'xfs']
+    ).decode("utf-8")
     total = p.splitlines()[-1]
     used = total.split()[3]
     size = total.split()[2]
@@ -89,10 +88,9 @@ class Traffic:
         self.tx = collections.deque(maxlen=10)
 
     def get(self):
-        f = open('/proc/net/dev', 'r')
-        net_dev = f.readlines()
-        f.close()
         avgrx = avgtx = 0
+        with open('/proc/net/dev', 'r') as f:
+            net_dev = f.readlines()
 
         for dev in net_dev[2:]:
             dev = dev.split(':')
@@ -118,16 +116,14 @@ class Traffic:
 
 
 def liuliang():
-    NET_IN = 0
-    NET_OUT = 0
+    NET_IN = NET_OUT = 0
+    re_parser = re.compile('([^\s]+):[\s]*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)')
     with open('/proc/net/dev') as f:
         for line in f.readlines():
-            netinfo = re.findall(
-                '([^\s]+):[\s]*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)',
-                line)
+            netinfo = re.findall(re_parser, line)
             if netinfo:
                 if netinfo[0][0] == 'lo' or 'tun' in netinfo[0][0] or netinfo[0][1] == '0' or netinfo[0][9] == '0':
-                    continue
+                    continue  # 排除localloop以及不存在流进流出的网卡
                 else:
                     NET_IN += int(netinfo[0][1])
                     NET_OUT += int(netinfo[0][9])
@@ -135,9 +131,11 @@ def liuliang():
 
 
 def get_network(ip_version):
-    HOST = "ipv4.google.com"
-    if ip_version == 6:
-        HOST = "ipv6.google.com"
+    if IN_CHINA:  # 国内使用清华大学开源镜像站提供的域名解析服务
+        HOST = "mirrors6.tuna.tsinghua.edu.cn" if ip_version == 6 else "mirrors4.tuna.tsinghua.edu.cn"
+    else:
+        HOST = "ipv6.google.com" if ip_version == 6 else "ipv4.google.com"
+
     try:
         socket.create_connection((HOST, 80), 2)
         return True
