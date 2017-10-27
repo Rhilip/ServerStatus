@@ -18,6 +18,8 @@ USER = "USER"
 PASSWORD = "USER_PASSWORD"
 INTERVAL = 1  # Update interval
 IN_CHINA = False  # enabled in china (changed to True)
+
+
 # -*- END OF CLIENT SETTING -*-
 
 
@@ -117,7 +119,9 @@ class Traffic:
 
 def liuliang():
     NET_IN = NET_OUT = 0
-    re_parser = re.compile('([^\s]+):[\s]*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)')
+    re_parser = re.compile(
+        '([^\s]+):[\s]*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)'
+    )
     with open('/proc/net/dev') as f:
         for line in f.readlines():
             netinfo = re.findall(re_parser, line)
@@ -193,7 +197,7 @@ if __name__ == '__main__':
                     timer -= 1 * INTERVAL
 
                 array['uptime'] = Uptime
-                array['load_1'] = Load_1
+                array['load'] = array['load_1'] = Load_1  # 向前兼容一段时间
                 array['load_5'] = Load_5
                 array['load_15'] = Load_15
                 array['memory_total'] = MemoryTotal
