@@ -184,40 +184,16 @@ function uptime() {
 
 				// Network
 				var netstr = "";
-				if(result.servers[i].network_rx < 1000)
-					netstr += result.servers[i].network_rx.toFixed(0) + "B";
-				else if(result.servers[i].network_rx < 1000*1000)
-					netstr += (result.servers[i].network_rx/1000).toFixed(0) + "K";
-				else
-					netstr += (result.servers[i].network_rx/1000/1000).toFixed(1) + "M";
-				netstr += " | "
-				if(result.servers[i].network_tx < 1000)
-					netstr += result.servers[i].network_tx.toFixed(0) + "B";
-				else if(result.servers[i].network_tx < 1000*1000)
-					netstr += (result.servers[i].network_tx/1000).toFixed(0) + "K";
-				else
-					netstr += (result.servers[i].network_tx/1000/1000).toFixed(1) + "M";
+				netstr += bytesToSize(result.servers[i].network_rx,2,1);
+				netstr += " | ";
+                netstr += bytesToSize(result.servers[i].network_tx,2,1);
 				TableRow.children["network"].innerHTML = netstr;
 
 				//Traffic
 				var trafficstr = "";
-				if(result.servers[i].network_in < 1024)
-					trafficstr += result.servers[i].network_in.toFixed(0) + "B";
-				else if(result.servers[i].network_in < 1024*1024)
-					trafficstr += (result.servers[i].network_in/1024).toFixed(0) + "K";
-				else if(result.servers[i].network_in < 1024*1024*1024)
-					trafficstr += (result.servers[i].network_in/1024/1024).toFixed(1) + "M";
-				else
-					trafficstr += (result.servers[i].network_in/1024/1024/1024).toFixed(2) + "G";
-				trafficstr += " | "
-				if(result.servers[i].network_out < 1024)
-					trafficstr += result.servers[i].network_out.toFixed(0) + "B";
-				else if(result.servers[i].network_out < 1024*1024)
-					trafficstr += (result.servers[i].network_out/1024).toFixed(0) + "K";
-				else if(result.servers[i].network_out < 1024*1024*1024)
-					trafficstr += (result.servers[i].network_out/1024/1024).toFixed(1) + "M";
-				else
-					trafficstr += (result.servers[i].network_out/1024/1024/1024).toFixed(2) + "G";
+				trafficstr += bytesToSize(result.servers[i].network_in,2,0);
+				trafficstr += " | ";
+				trafficstr += bytesToSize(result.servers[i].network_out,2,0);
 				TableRow.children["traffic"].innerHTML = trafficstr;
 
 				// CPU
