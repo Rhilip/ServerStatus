@@ -1,10 +1,10 @@
 // serverstatus.js
 var error = 0;
 var d = 0;
-var server_status = new Array();
+var server_status = [];
 
 function timeSince(date) {
-	if(date == 0)
+	if(date === 0)
 		return "从未.";
 
 	var seconds = Math.floor((new Date() - date) / 1000);
@@ -34,41 +34,30 @@ function bytesToSize(bytes, precision, si)
 {
 	var ret;
 	si = typeof si !== 'undefined' ? si : 0;
-	if(si != 0) {
-		var kilobyte = 1000;
-		var megabyte = kilobyte * 1000;
-		var gigabyte = megabyte * 1000;
-		var terabyte = gigabyte * 1000;
-	} else {
-		var kilobyte = 1024;
-		var megabyte = kilobyte * 1024;
-		var gigabyte = megabyte * 1024;
-		var terabyte = gigabyte * 1024;
+
+	var kilobyte = 1024;
+    var megabyte = kilobyte * 1024;
+    var gigabyte = megabyte * 1024;
+    var terabyte = gigabyte * 1024;
+	if(si !== 0) {
+		kilobyte = 1000;
+		megabyte = kilobyte * 1000;
+		gigabyte = megabyte * 1000;
+		terabyte = gigabyte * 1000;
 	}
 
 	if ((bytes >= 0) && (bytes < kilobyte)) {
-		return bytes + ' B';
-
+		ret = bytes + 'B';
 	} else if ((bytes >= kilobyte) && (bytes < megabyte)) {
-		ret = (bytes / kilobyte).toFixed(precision) + ' K';
-
+		ret = (bytes / kilobyte).toFixed(precision) + 'K';
 	} else if ((bytes >= megabyte) && (bytes < gigabyte)) {
-		ret = (bytes / megabyte).toFixed(precision) + ' M';
-
+		ret = (bytes / megabyte).toFixed(precision) + 'M';
 	} else if ((bytes >= gigabyte) && (bytes < terabyte)) {
-		ret = (bytes / gigabyte).toFixed(precision) + ' G';
-
+		ret = (bytes / gigabyte).toFixed(precision) + 'G';
 	} else if (bytes >= terabyte) {
-		ret = (bytes / terabyte).toFixed(precision) + ' T';
-
-	} else {
-		return bytes + ' B';
+		ret = (bytes / terabyte).toFixed(precision) + 'T';
 	}
-	//if(si != 0) {
-	//	return ret + 'B';
-	//} else {
-	//	return ret + 'iB';
-	//}
+    return ret
 }
 
 function uptime() {
@@ -176,7 +165,7 @@ function uptime() {
 				TableRow.children["uptime"].innerHTML = result.servers[i].uptime;
 
 				// Load
-				if(result.servers[i].load == -1) {
+				if(result.servers[i].load === -1) {
 					TableRow.children["load"].innerHTML = "–";
 				} else {
 					TableRow.children["load"].innerHTML = result.servers[i].load.toFixed(2);
@@ -290,11 +279,10 @@ setInterval(updateTime, 500);
 
 // styleswitcher.js
 function setActiveStyleSheet(title) {
-	var i, a, main;
+	var i, a;
 	for(i=0; (a = document.getElementsByTagName("link")[i]); i++) {
-		if(a.getAttribute("rel").indexOf("style") != -1 && a.getAttribute("title")) {
-			a.disabled = true;
-			if(a.getAttribute("title") == title) a.disabled = false;
+		if(a.getAttribute("rel").indexOf("style") !== -1 && a.getAttribute("title")) {
+			a.disabled = a.getAttribute("title") !== title;
 		}
 	}
 }
@@ -302,7 +290,7 @@ function setActiveStyleSheet(title) {
 function getActiveStyleSheet() {
 	var i, a;
 	for(i=0; (a = document.getElementsByTagName("link")[i]); i++) {
-		if(a.getAttribute("rel").indexOf("style") != -1 && a.getAttribute("title") && !a.disabled)
+		if(a.getAttribute("rel").indexOf("style") !== -1 && a.getAttribute("title") && !a.disabled)
 			return a.getAttribute("title");
 	}
 	return null;
@@ -311,7 +299,7 @@ function getActiveStyleSheet() {
 function getPreferredStyleSheet() {
 	var i, a;
 	for(i=0; (a = document.getElementsByTagName("link")[i]); i++) {
-		if(a.getAttribute("rel").indexOf("style") != -1	&& a.getAttribute("rel").indexOf("alt") == -1 && a.getAttribute("title"))
+		if(a.getAttribute("rel").indexOf("style") !== -1 && a.getAttribute("rel").indexOf("alt") === -1 && a.getAttribute("title"))
 			return a.getAttribute("title");
 	}
 return null;
@@ -332,9 +320,9 @@ function readCookie(name) {
 	var ca = document.cookie.split(';');
 	for(var i=0;i < ca.length;i++) {
 		var c = ca[i];
-		while (c.charAt(0)==' ')
+		while (c.charAt(0) === ' ')
 			c = c.substring(1,c.length);
-		if (c.indexOf(nameEQ) == 0)
+		if (c.indexOf(nameEQ) === 0)
 			return c.substring(nameEQ.length,c.length);
 	}
 	return null;
@@ -344,12 +332,12 @@ window.onload = function(e) {
 	var cookie = readCookie("style");
 	var title = cookie ? cookie : getPreferredStyleSheet();
 	setActiveStyleSheet(title);
-}
+};
 
 window.onunload = function(e) {
 	var title = getActiveStyleSheet();
 	createCookie("style", title, 365);
-}
+};
 
 var cookie = readCookie("style");
 var title = cookie ? cookie : getPreferredStyleSheet();
