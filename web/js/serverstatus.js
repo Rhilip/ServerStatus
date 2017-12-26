@@ -36,14 +36,14 @@ function bytesToSize(bytes, precision, si)
 	si = typeof si !== 'undefined' ? si : 0;
 
 	var kilobyte = 1024;
-    var megabyte = kilobyte * 1024;
-    var gigabyte = megabyte * 1024;
-    var terabyte = gigabyte * 1024;
+    var megabyte = 1024 * 1024;
+    var gigabyte = 1024 * 1024 * 1024;
+    var terabyte = 1024 * 1024 * 1024 * 1024;
 	if(si !== 0) {
 		kilobyte = 1000;
-		megabyte = kilobyte * 1000;
-		gigabyte = megabyte * 1000;
-		terabyte = gigabyte * 1000;
+		megabyte = 1000 * 1000;
+		gigabyte = 1000 * 1000 * 1000;
+		terabyte = 1000 * 1000 * 1000 * 1000;
 	}
 
 	if ((bytes >= 0) && (bytes < kilobyte)) {
