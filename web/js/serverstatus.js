@@ -64,11 +64,11 @@ function bytesToSize(bytes, precision, si)
 	} else {
 		return bytes + ' B';
 	}
-	if(si != 0) {
-		return ret + 'B';
-	} else {
-		return ret + 'iB';
-	}
+	//if(si != 0) {
+	//	return ret + 'B';
+	//} else {
+	//	return ret + 'iB';
+	//}
 }
 
 function uptime() {
