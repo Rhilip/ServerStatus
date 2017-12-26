@@ -1,7 +1,6 @@
 # ServerStatus中文版：   
 
 * ServerStatus中文版是一个酷炫高逼格的云探针、云监控、服务器云监控、多服务器探针~，该云监控（云探针）是ServerStatus（ https://github.com/BotoX/ServerStatus ）项目的中文（优化）版。
-* 在线演示：https://tz.cloudcpp.com    
 
 # 目录介绍：
 
@@ -11,9 +10,10 @@
 
 # 更新说明：
 
-* 20171024，在上游基础上，修改client-linux.py代码，使其支持客户端以IPv6的形式连接SERVER。移除没有用的自动部署autodeploy以及跨平台client-psutil
+* 20171226, 回复负载情况为load，而不是load1,5,15；重新显示IPv6信息
+* 20171024, 在上游基础上，修改client-linux.py代码，使其支持客户端以IPv6的形式连接SERVER。移除没有用的自动部署autodeploy以及跨平台client-psutil
 ---------
-* 20170807，更新平均1，5，15负载
+* 20170807, 更新平均1，5，15负载
 * 20170108, 更新支持所有系统
 * 20161205, 去掉无用的IPV6信息，增加服务器总流量监控                          
 
@@ -21,7 +21,7 @@
    
 【克隆代码】:
 ```
-git clone https://github.com/tenyue/ServerStatus.git
+git clone https://github.com/Rhilip/ServerStatus.git
 ```
 
 【服务端配置】（服务端程序在ServerStatus/web下）:  
