@@ -49,13 +49,13 @@ function bytesToSize(bytes, precision, si)
 	if ((bytes >= 0) && (bytes < kilobyte)) {
 		ret = bytes + 'B';
 	} else if ((bytes >= kilobyte) && (bytes < megabyte)) {
-		ret = (bytes / kilobyte).toFixed(precision) + 'K';
+		ret = (bytes / kilobyte).toFixed(bytes/kilobyte > 100 ? 1:precision) + 'K';
 	} else if ((bytes >= megabyte) && (bytes < gigabyte)) {
-		ret = (bytes / megabyte).toFixed(precision) + 'M';
+		ret = (bytes / megabyte).toFixed(bytes/megabyte > 100 ? 1:precision) + 'M';
 	} else if ((bytes >= gigabyte) && (bytes < terabyte)) {
-		ret = (bytes / gigabyte).toFixed(precision) + 'G';
+		ret = (bytes / gigabyte).toFixed(bytes/gigabyte > 100 ? 1:precision) + 'G';
 	} else if (bytes >= terabyte) {
-		ret = (bytes / terabyte).toFixed(precision) + 'T';
+		ret = (bytes / terabyte).toFixed(bytes/terabyte > 100 ? 1:precision) + 'T';
 	}
     return ret
 }
@@ -88,7 +88,7 @@ function uptime() {
 						"<td id=\"memory\"><div class=\"progress progress-striped active\"><div style=\"width: 100%;\" class=\"progress-bar progress-bar-warning\"><small>加载中</small></div></div></td>" +
 						"<td id=\"hdd\"><div class=\"progress progress-striped active\"><div style=\"width: 100%;\" class=\"progress-bar progress-bar-warning\"><small>加载中</small></div></div></td>" +
 					"</tr>" +
-					"<tr class=\"expandRow " + hack + "\"><td colspan=\"12\"><div class=\"accordian-body collapse\" id=\"rt" + i + "\">" +
+					"<tr class=\"expandRow " + hack + "\"><td colspan=\"14\"><div class=\"accordian-body collapse\" id=\"rt" + i + "\">" +
 						"<div id=\"expand_mem\">加载中</div>" +
 						"<div id=\"expand_swap\">加载中</div>" +
 						"<div id=\"expand_hdd\">加载中</div>" +
