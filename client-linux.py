@@ -10,6 +10,7 @@ import os
 import json
 import subprocess
 import collections
+from sys import version_info
 
 # -*- CLIENT SETTING -*-
 SERVER = "127.0.0.1"
@@ -154,9 +155,16 @@ if __name__ == '__main__':
             print("Connecting...")
             s = socket.create_connection((SERVER, PORT), 5)
             data = s.recv(1024)
+            if version_info.major == 3:
+                data = str(data, encoding='utf-8')
             if data.find("Authentication required") > -1:
-                s.send(USER + ':' + PASSWORD + '\n')
+                message = USER + ':' + PASSWORD + '\n'
+                if version_info.major == 3:
+                    message = bytes(message, encoding='utf-8')
+                s.send(message)
                 data = s.recv(1024)
+                if version_info.major == 3:
+                    data = str(data, encoding='utf-8')
                 if data.find("Authentication successful") < 0:
                     print(data)
                     raise socket.error
@@ -166,6 +174,8 @@ if __name__ == '__main__':
 
             print(data)
             data = s.recv(1024)
+            if version_info.major == 3:
+                data = str(data, encoding='utf-8')
             print(data)
 
             timer = 0
@@ -211,8 +221,10 @@ if __name__ == '__main__':
                 array['network_tx'] = NetTx
                 array['network_in'] = NET_IN
                 array['network_out'] = NET_OUT
-
-                s.send("update " + json.dumps(array) + "\n")
+                message = "update " + json.dumps(array) + "\n"
+                if version_info.major == 3:
+                    message = bytes(message, encoding='utf-8')
+                s.send(message)
         except KeyboardInterrupt:
             raise
         except socket.error:
@@ -220,7 +232,9 @@ if __name__ == '__main__':
             # keep on trying after a disconnect
             s.close()
             time.sleep(3)
-        except Exception as e:
-            print("Caught Exception:", e)
+        except Exception:
+            import traceback
+            print("Caught Exception:", traceback.format_exc())
             s.close()
             time.sleep(3)
+
